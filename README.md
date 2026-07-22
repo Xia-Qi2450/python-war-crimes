@@ -1,6 +1,6 @@
 # 🩸 python-war-crimes
 
-[![Confirm the crimes still work](https://github.com/YOUR_USERNAME/python-war-crimes/actions/workflows/crimes-ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/python-war-crimes/actions/workflows/crimes-ci.yml)
+[![Confirm the crimes still work](https://github.com/Xia-Qi2450/python-war-crimes/actions/workflows/crimes-ci.yml/badge.svg)](https://github.com/Xia-Qi2450/python-war-crimes/actions/workflows/crimes-ci.yml)
 
 > *"It compiled. Ship it."*
 
