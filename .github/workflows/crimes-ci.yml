@@ -1,0 +1,33 @@
+name: Confirm the crimes still work
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify-crimes:
+    name: python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Deliberately more than one version: several exhibits here only
+        # work BECAUSE of CPython implementation details, and those
+        # details change between versions. A crime that only survives on
+        # one specific interpreter is exactly the kind of thing this repo
+        # exists to document.
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Check out the scene of the crime
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run every exhibit and check it exits as expected
+        run: python3 scripts/verify_crimes.py
