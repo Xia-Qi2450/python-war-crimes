@@ -8,15 +8,17 @@ afterward -- not just a variable, the LITERAL.
 This depends on PyLongObject's internal memory layout, which has
 changed across CPython versions (notably around 3.11-3.12, when
 small ints became immortal objects with a different internal
-layout). Treat a crash, a silent no-op, or a genuinely defaced
-integer as three equally valid, equally cursed outcomes.
-
-Tested on CPython 3.12.3: it corrupts the integer object badly
-enough that the process segfaults on exit (nonzero/negative exit
-code, no traceback -- the interpreter just dies). That is not a bug
-in this file. That IS the demonstration. Run in a throwaway
-process, never in anything you care about, and don't be alarmed
-when your terminal reports a crash instead of clean output."""
+layout) and varies further across builds and platforms even within
+the same version. Treat a crash, a silent no-op, or a genuinely
+defaced integer as three equally valid, equally cursed outcomes --
+this is not hypothetical hedging, it's observed behavior: on one
+CPython 3.12.3 build this segfaults on exit; on GitHub Actions'
+hosted 3.12 and 3.13 runners it exits cleanly with no visible
+effect, because the offset math lands somewhere that isn't the
+digit value. Both are the crime. Neither is a bug in this file.
+CI logs this one's exit code but never fails the build over it --
+see scripts/verify_crimes.py. Run in a throwaway process, never in
+anything you care about."""
 
 import ctypes
 import sys

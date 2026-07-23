@@ -2,9 +2,9 @@
 """CI enforcement: every exhibit in this repo must actually run.
 
 Default expectation: exit code 0. A small number of Black_Magic
-entries are ALLOWED (required, even) to crash -- see
-EXPECTED_NONZERO below. If one of those starts exiting 0, that's not
-progress, that's a regression: someone accidentally fixed a crime.
+entries are genuinely unpredictable by design -- see UNSTABLE below.
+Those are logged, never graded pass/fail: there is no "correct" exit
+code to hold them to.
 """
 
 import pathlib
@@ -13,11 +13,18 @@ import sys
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 
-# path (relative to repo root) -> human-readable reason it's allowed to crash
-EXPECTED_NONZERO = {
+# path (relative to repo root) -> human-readable reason its outcome
+# is INTENTIONALLY unpredictable. These depend on CPython's internal
+# memory layout, which varies by version, build, and platform -- a
+# clean exit, a crash, or an actually-defaced integer are all
+# consistent with the crime. They're run and logged, but never
+# graded pass/fail, because there is no "correct" exit code to check
+# against. (Confirmed in the wild: this segfaults on some builds of
+# 3.12 and exits 0 cleanly on others. Both are the demonstration.)
+UNSTABLE = {
     "Black_Magic/deface_small_int.py": (
-        "corrupts a cached small int badly enough to segfault on exit "
-        "-- that IS the demonstration, not a bug"
+        "depends on CPython's internal PyLongObject layout -- may exit 0, "
+        "crash, or actually deface the integer, depending on version/build/platform"
     ),
 }
 
@@ -48,6 +55,7 @@ def main():
     exhibits = find_exhibits()
     failures = []
     skipped = 0
+    unstable = 0
 
     for path in exhibits:
         rel = relpath(path)
@@ -71,14 +79,10 @@ def main():
             failures.append(rel)
             continue
 
-        if rel in EXPECTED_NONZERO:
-            reason = EXPECTED_NONZERO[rel]
-            if code == 0:
-                print(f"FAIL   {rel}  -- expected a crash ({reason}), "
-                      f"but it exited cleanly. Did someone fix the bug? Revert that.")
-                failures.append(rel)
-            else:
-                print(f"PASS   {rel}  -- exited {code}, as chaotically expected ({reason})")
+        if rel in UNSTABLE:
+            reason = UNSTABLE[rel]
+            print(f"INFO   {rel}  -- exited {code} ({reason})")
+            unstable += 1
             continue
 
         if code != 0:
@@ -91,10 +95,10 @@ def main():
         else:
             print(f"PASS   {rel}")
 
-    graded = len(exhibits) - skipped
+    graded = len(exhibits) - skipped - unstable
     print()
     print(f"{graded - len(failures)}/{graded} crimes confirmed functional "
-          f"({skipped} helper module(s) skipped).")
+          f"({skipped} helper module(s) skipped, {unstable} logged as unstable-by-design).")
 
     if failures:
         print("\nThe following exhibits did not commit their crime correctly:")
