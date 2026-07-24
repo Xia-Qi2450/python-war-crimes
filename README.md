@@ -4,7 +4,9 @@
 
 > *"It compiled. Ship it."*
 
-OK why this heck does this even exist??? This is a live collection of the many cursed and badly coded Python beginners and people who experiment with random stuff do which **will** make people doubt being friend with you.
+OK, why the heck does this even exist?
+
+This is a live collection of cursed Python code written by beginners, sleep-deprived developers, and people who thought "what if...?" one too many times.
 
 This is not really a repository of bugs. Bugs get fixed. These somehow gets *committed*.
 
@@ -37,13 +39,23 @@ You can definitely run each file they are all 100% safe:
 python3 Functions/mutable_default_args.py
 ```
 
-Each one has a docstring at the top explaining exactly why it shouldn't work. Before you run it read that first, then you may proceed, then sit with yourfeelings(*WHAT HAVE YOU DONE???*).
+Each one has a docstring at the top explaining exactly why it shouldn't work. Before you run it read that first, then you may proceed, then sit with your feelings *(WHAT HAVE YOU DONE???)*.
 
-CI runs every exhibit on every PR across Python 3.11, 3.12, and 3.13, and fails the build if a file stops exiting `0` but there is one deliberate exception: `Black_Magic/deface_small_int.py` is *supposed* to crash, depending on CPython's internal memory layout, outcome varies by build and platform (confirmed: it segfaults on some 3.12 builds and exits cleanly on others). Check `scripts/verify_crimes.py` for more info.
+CI runs every exhibit on Python 3.11, 3.12, and 3.13.
+
+If a file suddenly starts behaving normally, the build fails.
+
+The only deliberate exception is:
+
+`Black_Magic/deface_small_int.py`
+
+That exhibit is *supposed* to crash...
+
+ depending on CPython's internal memory layout, outcome varies by build and platform *(confirmed: it segfaults on some 3.12 builds and exits cleanly on others)*. Check `scripts/verify_crimes.py` for more info.
 
 ## Contributing
 
-Wait? You want to contibute to this madness that is this repository? Well you are definitely welcome to do so. Here are some steps in being able to add your own Python War Crimes into this collection:
+Wait? You want to contribute to this madness that is this repository? Well you are definitely welcome to do so. Here are some steps in being able to add your own Python War Crimes into this collection:
 
 1. Write code that breaks a rule in `Geneva_Convention.md`.
 2. Confirm it actually runs. `python3 your_crime.py` must exit `0`, or the crime doesn't count — it's just a bug. (If your crime is supposed to crash the interpreter, add it to `EXPECTED_NONZERO` in `scripts/verify_crimes.py` and say why.)
@@ -57,4 +69,4 @@ Several entries were *found* in production. That is the tragedy, not the endorse
 
 ## License
 
-MIT. Do whatever you want with these. Frankly, someone should stop you, but it won't be this license.
+MIT. Do whatever you want with these. Frankly, someone should stop you, but it won't be this license, and I am not inventing my own.
